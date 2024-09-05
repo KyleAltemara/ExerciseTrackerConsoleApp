@@ -3,6 +3,10 @@
 using ExerciseTrackerConsoleApp.Data;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// The specific implementation of <see cref="IRepository{T}"/>  where T is a <see cref="RunningEntry"/>.
+/// </summary>
+/// <typeparam name="T">T must be a <see cref="RunningEntry"/>.</typeparam>
 public class RunningTrackerRepository<T> : IRepository<T> where T : RunningEntry
 {
     private readonly ExerciseTrackerContext _context;

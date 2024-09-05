@@ -7,19 +7,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Menu(RunningTrackerService exerciseTrackerService)
+/// <summary>
+/// Represents the menu for the Exercise Tracker console application.
+/// </summary>
+public class Menu
 {
-    private readonly RunningTrackerService _exerciseTrackerService = exerciseTrackerService;
+    private readonly RunningTrackerService _exerciseTrackerService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Menu"/> class.
+    /// </summary>
+    /// <param name="exerciseTrackerService">The exercise tracker service.</param>
+    public Menu(RunningTrackerService exerciseTrackerService)
+    {
+        _exerciseTrackerService = exerciseTrackerService;
+    }
+
+    /// <summary>
+    /// Displays the main menu and handles user input.
+    /// </summary>
     public void MainMenu()
     {
         var menuOptions = new Dictionary<string, Action>
-            {
-                { "Log Run", () => LogExercise() },
-                { "Print Running Logs", () => PrintLogs() },
-                { "Delete Running Log", () => DeleteLog() },
-                { "Exit", () => Environment.Exit(0) },
-            };
+        {
+            { "Log Run", () => LogExercise() },
+            { "Print Running Logs", () => PrintLogs() },
+            { "Delete Running Log", () => DeleteLog() },
+            { "Exit", () => Environment.Exit(0) },
+        };
 
         var menu = new SelectionPrompt<string>()
             .Title("[bold]Coding Tracker Menu[/]")
@@ -32,6 +47,9 @@ public class Menu(RunningTrackerService exerciseTrackerService)
         }
     }
 
+    /// <summary>
+    /// Gets and validates input for logging an exercise from the user, and adds the exercise to the repository using the service.
+    /// </summary>
     private void LogExercise()
     {
         var date = GetDateTime();
@@ -66,6 +84,9 @@ public class Menu(RunningTrackerService exerciseTrackerService)
         _exerciseTrackerService.LogExercise(date.Value, new TimeSpan(0, duration, 0), comments);
     }
 
+    /// <summary>
+    /// Gets and prints all exercise logs from the repository using the service.
+    /// </summary>
     private void PrintLogs()
     {
         var exerciseLogs = _exerciseTrackerService.GetExerciseLogs();
@@ -79,14 +100,14 @@ public class Menu(RunningTrackerService exerciseTrackerService)
         foreach (var exerciseLog in exerciseLogs)
         {
             string[] row =
-            [
+            {
                 exerciseLog.Id.ToString(),
                 exerciseLog.Name,
                 exerciseLog.DateStart.ToString("yyyy-MM-dd HH:mm"),
                 exerciseLog.DateEnd.ToString("yyyy-MM-dd HH:mm"),
                 exerciseLog.Duration.ToString("c"),
                 exerciseLog.Comments?.ToString() ?? string.Empty
-            ];
+            };
 
             table.AddRow(row);
         }
@@ -96,6 +117,9 @@ public class Menu(RunningTrackerService exerciseTrackerService)
         Console.ReadKey();
     }
 
+    /// <summary>
+    /// Lists all exercise logs and prompts the user to select one to delete, then deletes the selected log.
+    /// </summary>
     private void DeleteLog()
     {
         var logs = _exerciseTrackerService.GetExerciseLogs();
@@ -124,15 +148,19 @@ public class Menu(RunningTrackerService exerciseTrackerService)
         Console.ReadKey();
     }
 
+    /// <summary>
+    /// Gets a date and time from the user.
+    /// </summary>
+    /// <returns>The date and time entered by the user, or null if the user cancels.</returns>
     private static DateTime? GetDateTime()
     {
         DateTime date;
         var dateOptions = new Dictionary<string, DateTime>
-            {
-                { "Today", DateTime.Today },
-                { "Yesterday", DateTime.Today.AddDays(-1) },
-                { "Custom Date", DateTime.MinValue }
-            };
+        {
+            { "Today", DateTime.Today },
+            { "Yesterday", DateTime.Today.AddDays(-1) },
+            { "Custom Date", DateTime.MinValue }
+        };
 
         var datePrompt = new SelectionPrompt<string>()
             .Title("Select the date to log")
@@ -159,21 +187,21 @@ public class Menu(RunningTrackerService exerciseTrackerService)
             }
 
             Dictionary<string, int> monthOptions = new()
-                {
-                    { "Jan", 1},
-                    {"Feb",  2},
-                    {"Mar", 3},
-                    {"Apr", 4},
-                    {"May", 5},
-                    {"Jun", 6},
-                    {"Jul", 7},
-                    {"Aug", 8},
-                    {"Sep", 9},
-                    {"Oct", 10},
-                    {"Nov", 11},
-                    {"Dec", 12},
-                    { "Cancel", 0 }
-                };
+            {
+                { "Jan", 1},
+                {"Feb",  2},
+                {"Mar", 3},
+                {"Apr", 4},
+                {"May", 5},
+                {"Jun", 6},
+                {"Jul", 7},
+                {"Aug", 8},
+                {"Sep", 9},
+                {"Oct", 10},
+                {"Nov", 11},
+                {"Dec", 12},
+                { "Cancel", 0 }
+            };
             var monthPrompt = new SelectionPrompt<string>()
                 .Title("Select the month")
                 .AddChoices(monthOptions.Keys);

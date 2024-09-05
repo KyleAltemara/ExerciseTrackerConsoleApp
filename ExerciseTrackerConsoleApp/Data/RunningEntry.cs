@@ -1,5 +1,8 @@
 ﻿namespace ExerciseTrackerConsoleApp.Data;
 
+/// <summary>
+/// The specific implementation of <see cref="IExerciseEntry"/> for running.
+/// </summary>
 public class RunningEntry : IExerciseEntry
 {
     public string Name { get; } = "Running";
